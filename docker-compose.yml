@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+
+  app-fpm:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    env_file: .env
+    restart: always
+    ports:
+        - "8090:80"
+    working_dir: /var/www/wss
+    command: ["make", "start-back"]
+    volumes:
+      - .:/var/www/wss
+
+
+  jobs:
+      build:
+          context: .
+          dockerfile: Dockerfile
+      env_file: .env
+      restart: always
+      volumes:
+          - .:/var/www/wss
+      command: php artisan queue:work database --tries=3 --sleep=3 --timeout=30
+
+  cron:
+      build:
+          context: .
+          dockerfile: Dockerfile
+      env_file: .env
+      restart: always
+      volumes:
+          - .:/var/www/wss
+      command: sh -c "while [ true ]; do (php /var/www/wss/artisan schedule:run --verbose --no-interaction &); sleep 60; done"
+
+
+    # Redis -------------------------------------------------
+
+  redis:
+    image: redis:6-alpine
+    restart: always
+    ports:
+        - "0.0.0.0:6579:6379"
+    volumes:
+      - ./redis.conf:/redis.conf
+    command: [ "redis-server", "/redis.conf" ]
+
+  mariadb:
+      image: mariadb
+      restart: always
+      volumes:
+          - ./mariadb_data:/var/lib/mysql
+          - ./mysql.conf:/etc/mysql/conf.d/mysql.cnf:ro
+      environment:
+          MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+          MYSQL_DATABASE: ${DB_DATABASE}
+          MYSQL_USER: ${DB_USERNAME}
+          MYSQL_PASSWORD: ${DB_PASSWORD}
+      ports:
+          - "3309:3306"
+
+  meilisearch:
+      image: getmeili/meilisearch:latest
+      restart: always
+      volumes:
+          - ./data.ms:/data.ms
+      environment:
+          - MEILI_NO_ANALYTICS=true
+          - MEILI_NO_SENTRY=true
+          - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+      ports:
+          - "7702:7700"
