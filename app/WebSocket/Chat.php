@@ -2,6 +2,7 @@
 
 namespace App\WebSocket;
 
+use Illuminate\Support\Facades\Log;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
