@@ -1,3 +1,17 @@
+setup:
+	composer install
+	docker-compose up -d
+	cp -n .env.example .env|| true
+	docker-compose exec app-fpm php artisan key:gen --ansi
+	docker-compose exec app-fpm php artisan migrate --force
+	docker-compose exec app-fpm php artisan db:seed --force
+
+start-back:
+	php artisan serve --host 0.0.0.0 --port 80
+
+start-socket:
+	php artisan websocket-start
+
 test:
 	docker-compose exec app-fpm php artisan test
 
@@ -19,12 +33,6 @@ lint-fix:
 phpstan:
 	composer exec phpstan analyse
 
-analyse:
-	composer exec phpstan analyse -v
-
-config-clear:
-	php artisan config:clear
-
 env-prepare:
 	cp -n .env.example .env || true
 
@@ -34,9 +42,9 @@ key:
 ide-helper:
 	php artisan ide-helper:eloquent
 	php artisan ide-helper:gen
-#	php artisan ide-helper:generate
-#	php artisan ide-helper:model
-#	php artisan ide-helper:meta
+	php artisan ide-helper:generate
+	php artisan ide-helper:model
+	php artisan ide-helper:meta
 	php artisan ide-helper:mod -n
 
 update:
@@ -45,26 +53,10 @@ update:
 	docker-compose exec app-fpm php artisan migrate --force
 	docker-compose exec app-fpm php artisan optimize
 
-seeder-dev:
-	docker-compose exec app-fpm php artisan db:seed
-
-
 heroku-build:
 	php artisan migrate --force
 	php artisan db:seed --force
 	php artisan optimize
-
-setup:
-	composer install
-	cp -n .env.example .env|| true
-	php artisan key:gen --ansi
-	php artisan migrate --force
-	php artisan db:seed --force
-	php artisan optimize
-
-
-start-back:
-	php artisan serve --host 0.0.0.0 --port 80
 
 start-front:
 	npm run dev

@@ -9,9 +9,9 @@ services:
     env_file: .env
     restart: always
     ports:
-        - "8090:80"
+        - "8090:8080"
     working_dir: /var/www/wss
-    command: ["make", "start-back"]
+    command: ["make", "start-socket"]
     volumes:
       - .:/var/www/wss
 
