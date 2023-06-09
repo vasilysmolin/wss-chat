@@ -4,6 +4,7 @@
     <title>Chat</title>
 </head>
 <body>
+<h1>{{Auth::user()?->email}}</h1>
 <div id="messages"></div>
 <form>
     <input type="text" id="message" autocomplete="off">
@@ -14,9 +15,19 @@
 <script>
     var webSocket = new WebSocket('ws://localhost:8086');
 
+    let userId = '{{Auth::user()?->getKey()}}';
+    webSocket.addEventListener('open', function (event) {
+        // при отправке запроса добавляем заголовок "Authorization"
+        webSocket.send(JSON.stringify({
+            action: 'open',
+            user_id: userId,
+        }));
+    });
+
     webSocket.onopen = function(event) {
         console.log('WebSocket is connected.');
     };
+
 
     webSocket.onmessage = function(event) {
         var messagesElement = $('#messages');

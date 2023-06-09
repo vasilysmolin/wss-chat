@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('text');
+            $table->string('type')->default('chat');
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('room_id')->index();
-            $table->timestamp('created_at')->index()->nullable();
+            $table->timestamp('created_at')->index();
             $table->index(['created_at', 'room_id']);
             $table->timestamp('updated_at')->nullable();
         });

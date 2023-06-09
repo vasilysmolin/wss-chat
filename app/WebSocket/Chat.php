@@ -2,7 +2,9 @@
 
 namespace App\WebSocket;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
@@ -24,10 +26,11 @@ class Chat implements MessageComponentInterface
     public function onMessage(ConnectionInterface $from, $msg)
     {
         foreach ($this->clients as $client) {
-//            if ($from !== $client) {
+            if ($from !== $client) {
                 $client->send($msg);
-//            }
+            }
         }
+        echo "New message! ({$msg})\n";
     }
 
     public function onClose(ConnectionInterface $conn)

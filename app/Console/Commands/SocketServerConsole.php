@@ -38,6 +38,11 @@ class SocketServerConsole extends Command
             8086
         );
 
+//        $server = IoServer::factory(
+//            new Chat(),
+//            8086
+//        );
+
         $server->run();
 
     }
