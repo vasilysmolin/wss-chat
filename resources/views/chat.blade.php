@@ -15,14 +15,14 @@
 <script>
     var webSocket = new WebSocket('ws://localhost:8086');
 
-    let userId = '{{Auth::user()?->getKey()}}';
-    webSocket.addEventListener('open', function (event) {
-        // при отправке запроса добавляем заголовок "Authorization"
-        webSocket.send(JSON.stringify({
-            action: 'open',
-            user_id: userId,
-        }));
-    });
+    {{--let userId = '{{Auth::user()?->getKey()}}';--}}
+    {{--webSocket.addEventListener('open', function (event) {--}}
+    {{--    // при отправке запроса добавляем заголовок "Authorization"--}}
+    {{--    webSocket.send(JSON.stringify({--}}
+    {{--        action: 'open',--}}
+    {{--        user_id: userId,--}}
+    {{--    }));--}}
+    {{--});--}}
 
     webSocket.onopen = function(event) {
         console.log('WebSocket is connected.');

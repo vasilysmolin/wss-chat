@@ -10,9 +10,9 @@ class Room extends Model
     use HasFactory;
     protected $fillable = ['name', 'description'];
 
-    public function users()
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'user_rooms');
     }
 
     public function messages()
