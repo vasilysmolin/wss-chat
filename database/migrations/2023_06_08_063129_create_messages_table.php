@@ -1,5 +1,6 @@
 <?php
 
+use App\Objects\MessageTypes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('text');
-            $table->string('type')->default('chat');
+            $table->enum('type', MessageTypes::keys())->default(MessageTypes::chat());
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('room_id')->index();
             $table->timestamp('created_at')->index();
