@@ -2,6 +2,8 @@
 
 namespace App\WebSocket;
 
+use App\Http\Resources\MessageResource;
+use App\Http\Resources\MessagesResource;
 use App\Models\Message;
 use App\Models\Room;
 use App\Models\User;
@@ -47,7 +49,7 @@ class Chat implements MessageComponentInterface
         $currentConn = $this->checkAuth($conn);
         $this->clients->attach($currentConn);
         $messages = Message::lastDay($currentConn->user)->get();
-        $currentConn->send($messages);
+        $currentConn->send((new MessagesResource($messages))->toJson());
 
         echo "New connection! ({$currentConn->resourceId})\n";
     }
@@ -69,7 +71,7 @@ class Chat implements MessageComponentInterface
                 if ($from->user_id !== $user->getKey()) {
                     $client = $collect->where('user_id', $user->getKey())->first();
                     if ($client) {
-                        $client->send($message);
+                        $client->send((new MessageResource($message))->toJson());
                     }
                 }
             }

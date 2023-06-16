@@ -25,6 +25,7 @@ class Message extends Model
     public function scopeLastDay(Builder $query, User $user)
     {
         return $query->where('user_id', $user->getKey())
-            ->where('created_at', '>=', now()->subDay());
+            ->where('created_at', '>=', now()->subDay())
+            ->orderByDesc('created_at');
     }
 }
