@@ -15,10 +15,30 @@ Chat from socket
 curl -sSL get.docker.com | sh
 sudo apt-get install docker-compose
 
-make setup - запуск вебсокета
+start-socket - запуск вебсокета
 make start-back - запуск сервера
 
 * `make lint`
 * `make test`
+
+
+## Отправить сообщение
+`{
+"msg": "Hello",
+"type": "message",
+"room": 1
+}`
+
+## Вступить в группу
+`{
+"type": "into_room",
+"room": 1
+}`
+
+## Выйти из группы
+`{
+"type": "out_room",
+"room": 1
+}`
 
 

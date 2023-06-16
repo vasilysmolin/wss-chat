@@ -15,7 +15,8 @@
         "predis/predis": "^2.1",
         "rybakit/msgpack": "^0.9.1",
         "tightenco/ziggy": "^1.0",
-        "tymon/jwt-auth": "^2.0"
+        "tymon/jwt-auth": "^2.0",
+        "ext-redis": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

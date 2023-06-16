@@ -6,7 +6,6 @@ use App\Models\Message;
 use App\Models\Room;
 use App\Models\User;
 use App\Objects\MessageTypes;
-use Predis\Client;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -16,13 +15,29 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Chat implements MessageComponentInterface
 {
-    protected $clients;
-    private $redis;
+    public $clients;
+//    public static $instance;
 
     public function __construct()
     {
         $this->clients = new \SplObjectStorage;
-        $this->redis = new Client();
+//        self::$instance = $this;
+    }
+
+//    public function getInstance() {
+//        return $this;
+//    }
+
+    public function broadcast(array $message) {
+        $room = Room::find($message['room_id']);
+        $collect = collect($this->clients);
+
+        foreach ($room->users as $user) {
+            $client = $collect->where('user_id', $user->getKey())->first();
+            if ($client) {
+                $client->send($message);
+            }
+        }
     }
 
 
@@ -30,8 +45,7 @@ class Chat implements MessageComponentInterface
     {
         $currentConn = $this->checkAuth($conn);
         $this->clients->attach($currentConn);
-        $messages = Message::where('user_id', $currentConn->user->getKey())
-            ->where('created_at', '>=', now()->subDay())->get();
+        $messages = Message::lastDay($currentConn->user)->get();
         $currentConn->send($messages);
 
         echo "New connection! ({$currentConn->resourceId})\n";
@@ -43,6 +57,7 @@ class Chat implements MessageComponentInterface
         $room = Room::find($messageData['room']);
         $message = $this->saveMessage($room, $from->user, $messageData);
         $collect = collect($this->clients);
+//        Redis::publish("room-{$room->getKey()}", $message);
 
         foreach ($room->users as $user) {
             if ($from->user_id !== $user->getKey()) {
@@ -52,6 +67,10 @@ class Chat implements MessageComponentInterface
                 }
             }
         }
+
+//        Redis::psubscribe(['room-*'], function ($msg) {
+//            $this->broadcast($msg);
+//        });
         echo "New message! ({$msg})\n";
     }
 

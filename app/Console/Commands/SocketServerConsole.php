@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\WebSocket\Pusher;
 use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
@@ -15,7 +16,7 @@ class SocketServerConsole extends Command
      *
      * @var string
      */
-    protected $signature = 'websocket-start';
+    protected $signature = 'websocket-start {--port=}';
 
     /**
      * The console command description.
@@ -29,19 +30,16 @@ class SocketServerConsole extends Command
      */
     public function handle()
     {
+        $port = $this->option('port') ?? config('app.websocket_port');
+        $chat = new Chat();
         $server = IoServer::factory(
             new HttpServer(
                 new WsServer(
-                    new Chat()
+                    $chat
                 )
             ),
-            8086
+            (int) $port
         );
-
-//        $server = IoServer::factory(
-//            new Chat(),
-//            8086
-//        );
 
         $server->run();
 

@@ -3,8 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Predis\Client;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +21,6 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    dd(User::first()->rooms);
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),

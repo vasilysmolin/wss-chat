@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\WebSocket\Chat;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+//        $this->app->singleton(Chat::class, function (Application $app) {
+//            return new Chat();
+//        });
     }
 }
