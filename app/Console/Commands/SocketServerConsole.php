@@ -42,6 +42,5 @@ class SocketServerConsole extends Command
         );
 
         $server->run();
-
     }
 }

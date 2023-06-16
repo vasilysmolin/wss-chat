@@ -20,7 +20,7 @@ class Chat implements MessageComponentInterface
 
     public function __construct()
     {
-        $this->clients = new \SplObjectStorage;
+        $this->clients = new \SplObjectStorage();
 //        self::$instance = $this;
     }
 
@@ -28,7 +28,8 @@ class Chat implements MessageComponentInterface
 //        return $this;
 //    }
 
-    public function broadcast(array $message) {
+    public function broadcast(array $message)
+    {
         $room = Room::find($message['room_id']);
         $collect = collect($this->clients);
 
@@ -55,15 +56,21 @@ class Chat implements MessageComponentInterface
     {
         $messageData = json_decode($msg, true);
         $room = Room::find($messageData['room']);
-        $message = $this->saveMessage($room, $from->user, $messageData);
         $collect = collect($this->clients);
 //        Redis::publish("room-{$room->getKey()}", $message);
 
-        foreach ($room->users as $user) {
-            if ($from->user_id !== $user->getKey()) {
-                $client = $collect->where('user_id', $user->getKey())->first();
-                if ($client) {
-                    $client->send($message);
+
+        if (MessageTypes::showRooms() === $messageData['type']) {
+            $message = Room::get();
+            $from->send($message);
+        } else {
+            $message = $this->saveMessage($room, $from->user, $messageData);
+            foreach ($room->users as $user) {
+                if ($from->user_id !== $user->getKey()) {
+                    $client = $collect->where('user_id', $user->getKey())->first();
+                    if ($client) {
+                        $client->send($message);
+                    }
                 }
             }
         }
@@ -110,7 +117,6 @@ class Chat implements MessageComponentInterface
                     'userName' => $user->name,
                     'roomName' => $room->name
                 ]);
-                break;
             default:
         }
 
@@ -120,13 +126,12 @@ class Chat implements MessageComponentInterface
             'room_id' => $messageDate['room'],
             'user_id' => $user->getKey(),
         ]);
-
     }
 
     private function checkAuth(ConnectionInterface $conn): ConnectionInterface
     {
         $queryString = $conn->httpRequest->getUri()->getQuery();
-        $queryCollect = collect(explode('&',$queryString));
+        $queryCollect = collect(explode('&', $queryString));
         $query = $queryCollect->mapWithKeys(function ($item) {
             $param = collect(explode('=', $item));
             return [$param[0] => $param[1]];
@@ -146,5 +151,4 @@ class Chat implements MessageComponentInterface
 
         return $conn;
     }
-
 }

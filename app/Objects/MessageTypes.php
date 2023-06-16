@@ -7,7 +7,7 @@ class MessageTypes
     private const MESSAGE = 'message';
     private const OUT_ROOM = 'out_room';
     private const INTO_ROOM = 'into_room';
-
+    private const SHOW_ROOMS = 'show_rooms';
 
 
     private const UNIT_KEYS = [
@@ -44,5 +44,10 @@ class MessageTypes
     public static function outRoom(): string
     {
         return self::OUT_ROOM;
+    }
+
+    public static function showRooms(): string
+    {
+        return self::SHOW_ROOMS;
     }
 }
