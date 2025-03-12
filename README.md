@@ -1,6 +1,6 @@
 # About Project
 
-Chat from socket
+Chat from socket redis pub/sub
 
 ## Требования
 
@@ -18,41 +18,13 @@ sudo apt-get install docker-compose
 php artisan websocket-start --port=8087 - запуск вебсокета
 php artisan websocket-start --port=8086 - запуск вебсокета
 
-Создаем пользователей 1234567 пароль
-```
-[
-  {
-    "id": 1,
-    "name": "1",
-    "email": "vas@mail.ru",
-    "email_verified_at": null,
-    "password": "$2y$10$..HgWeQuVJtn2btBFosTrePGT/PqnIXzgCEXBPjsOBcg3dIr1tOpu",
-    "remember_token": null,
-    "created_at": null,
-    "updated_at": null
-  },
-  {
-    "id": 2,
-    "name": "2",
-    "email": "2@mail.ru",
-    "email_verified_at": null,
-    "password": "$2y$10$..HgWeQuVJtn2btBFosTrePGT/PqnIXzgCEXBPjsOBcg3dIr1tOpu",
-    "remember_token": null,
-    "created_at": null,
-    "updated_at": null
-  }
-]
-```
+php artisan db:seed - заполнение тестовыми данными user и room
 
 Получаем токены для пользователей и генерим урлы
 ws://localhost:8086?token=123
 ws://localhost:8087?token=321
 
-Создаем модели комнат и привязки
-
-
-
-
+Установить клиента в браузере
 
 
 ## Отправить сообщение
@@ -75,7 +47,7 @@ ws://localhost:8087?token=321
 }`
 
 
-
+## дополнительно
 * `make lint`
 * `make test`
 
