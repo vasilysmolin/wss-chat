@@ -59,8 +59,7 @@ class Chat implements MessageComponentInterface
         $messageData = json_decode($msg, true);
         $room = Room::find($messageData['room']);
         $collect = collect($this->clients);
-//        Redis::publish("room-{$room->getKey()}", $message);
-
+//        Redis::publish("room-{$messageData['room']}", $messageData);
 
         if (MessageTypes::showRooms() === $messageData['type']) {
             $message = Room::get();

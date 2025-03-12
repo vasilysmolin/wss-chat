@@ -57,6 +57,12 @@ RUN set -xe \
 RUN apk add --no-cache supervisor tzdata
 ENV TZ Europe/Moscow
 ARG DOCKER_ENV
+
+RUN apk update && apk add --no-cache \
+        php8-redis \
+        && pecl install redis \
+        && docker-php-ext-enable redis
+
 RUN if [ "$DOCKER_ENV" = "local" ]; \
 	then apk add --update linux-headers && pecl install xdebug && docker-php-ext-enable xdebug;  \
 	else echo "$DOCKER_ENV"; \

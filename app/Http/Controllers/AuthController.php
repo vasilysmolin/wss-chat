@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use MessagePack\MessagePack;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
